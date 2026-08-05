@@ -12,7 +12,18 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 function initApp() {
     // 1. Splash Screen Logic
-    if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
+    // NOTE: On GitHub Pages a project site is served from a subpath like
+    // "/PCB-HUB-/" (not just "/"), and visiting the folder loads index.html
+    // WITHOUT the filename appearing in the URL. The old check only matched
+    // pathname === '/' or pathname ending in 'index.html', so on GitHub
+    // Pages it never matched -> redirect never fired -> page stuck forever
+    // on "System Initializing...". Checking for a trailing '/' as well
+    // fixes this for root sites, project sites, and local files.
+    if (
+        window.location.pathname.endsWith('index.html') ||
+        window.location.pathname === '/' ||
+        window.location.pathname.endsWith('/')
+    ) {
         setTimeout(() => {
             window.location.href = 'login.html';
         }, 2500); // 2.5s Splash Delay
