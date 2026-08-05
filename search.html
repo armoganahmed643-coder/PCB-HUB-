@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PCB HUB - Search Database</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Search Page Stylesheet -->
+    <link rel="stylesheet" href="../css/search.css">
+</head>
+<body class="search-body">
+    
+    <!-- Top App Bar -->
+    <header class="app-header glass-panel">
+        <a href="dashboard.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+        <div class="header-brand">
+            <i class="fa-solid fa-microchip"></i>
+            <h1>PCB <span>HUB</span></h1>
+        </div>
+    </header>
+
+    <!-- Sticky Search Header -->
+    <div class="search-sticky-container glass-panel">
+        <div class="search-input-wrapper">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" id="searchInput" placeholder="Search PCB Number, Brand, or Model..." autocomplete="off">
+            <button id="clearSearchBtn" class="action-btn hidden" aria-label="Clear Search">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="search-tools">
+                <button id="voiceSearchBtn" class="action-btn voice-btn" aria-label="Voice Search">
+                    <i class="fa-solid fa-microphone"></i>
+                </button>
+                <button id="qrScannerBtn" class="action-btn qr-btn" aria-label="Scan QR Code">
+                    <i class="fa-solid fa-qrcode"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Filter Pills -->
+        <div class="filter-scroll-container">
+            <div class="filter-pills" id="categoryFilters">
+                <button class="pill active" data-filter="All">All</button>
+                <button class="pill" data-filter="Router">Routers</button>
+                <button class="pill" data-filter="TV">Smart TV</button>
+                <button class="pill" data-filter="ECU">Automotive ECU</button>
+                <button class="pill" data-filter="Laptop">Laptops</button>
+                <button class="pill" data-filter="Mobile">Mobiles</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="search-workspace">
+        
+        <!-- Default State: Recent Searches & Suggestions -->
+        <section id="defaultState" class="state-container active">
+            <div class="section-header">
+                <h3>Recent Searches</h3>
+                <button id="clearHistoryBtn" class="text-link">Clear</button>
+            </div>
+            <div class="recent-searches" id="recentSearchesList">
+                <!-- Injected via JS -->
+            </div>
+
+            <div class="section-header mt-4">
+                <h3>Suggested Categories</h3>
+            </div>
+            <div class="suggestions-grid">
+                <div class="suggestion-card glass-card" onclick="triggerSearch('TP-Link')">
+                    <i class="fa-solid fa-wifi text-cyan"></i>
+                    <span>TP-Link Routers</span>
+                </div>
+                <div class="suggestion-card glass-card" onclick="triggerSearch('Bosch')">
+                    <i class="fa-solid fa-car text-amber"></i>
+                    <span>Bosch ECUs</span>
+                </div>
+                <div class="suggestion-card glass-card" onclick="triggerSearch('Samsung')">
+                    <i class="fa-solid fa-tv text-success"></i>
+                    <span>Samsung Boards</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Loading State -->
+        <section id="loadingState" class="state-container hidden">
+            <div class="loader-wrapper">
+                <div class="spinner"></div>
+                <p>Querying PCB Database...</p>
+            </div>
+        </section>
+
+        <!-- Search Results State -->
+        <section id="resultsState" class="state-container hidden">
+            <div class="results-header">
+                <p id="resultsCount">Found 0 results</p>
+            </div>
+            <div class="results-grid" id="resultsGrid">
+                <!-- Cards injected via JS -->
+            </div>
+        </section>
+
+        <!-- Empty Results State -->
+        <section id="emptyState" class="state-container hidden text-center">
+            <div class="empty-illustration">
+                <i class="fa-solid fa-box-open"></i>
+            </div>
+            <h3>No PCBs Found</h3>
+            <p>We couldn't find any hardware matching your query. Check for typos or try a different model.</p>
+            <button class="btn btn-primary mt-4" onclick="document.getElementById('searchInput').focus()">Try Another Search</button>
+        </section>
+
+        <!-- Error State -->
+        <section id="errorState" class="state-container hidden text-center">
+            <div class="empty-illustration text-danger">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3>Connection Error</h3>
+            <p>Failed to query the PCB database. Please check your network connection.</p>
+            <button class="btn btn-outline mt-4" onclick="performSearch()">Retry</button>
+        </section>
+
+    </main>
+
+    <script src="../js/search.js"></script>
+</body>
+</html>
