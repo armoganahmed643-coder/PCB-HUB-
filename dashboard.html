@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCB HUB - Main Terminal</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dashboard-body">
+    <!-- Global Loader -->
+    <div id="global-loader" class="loader-overlay hidden">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Top App Bar -->
+    <header class="app-header glass-panel">
+        <div class="header-brand">
+            <i class="fa-solid fa-microchip"></i>
+            <h1>PCB <span>HUB</span></h1>
+        </div>
+        <div class="header-actions">
+            <button class="icon-btn" onclick="showToast('No new notifications', 'info')">
+                <i class="fa-solid fa-bell"></i>
+            </button>
+            <div class="user-avatar">
+                <img src="https://ui-avatars.com/api/?name=Admin+User&background=F59E0B&color=0A0A0A" alt="Profile">
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Workspace -->
+    <main class="dashboard-workspace fade-in-animation">
+        <section class="welcome-section">
+            <h2>Welcome back, Engineer.</h2>
+            <p>System status: <span class="status-online">Online</span></p>
+        </section>
+
+        <!-- Dynamic Grid Layout for Cards -->
+        <div class="dashboard-grid">
+            
+            <!-- Card 1: Search PCB -->
+            <a href="#" class="glass-card dash-card" onclick="triggerModule('Search PCB')">
+                <div class="card-icon-wrapper search-theme">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <h3>Search PCB</h3>
+                <p>Query schematic database</p>
+            </a>
+
+            <!-- Card 2: Add PCB -->
+            <a href="#" class="glass-card dash-card" onclick="triggerModule('Add PCB')">
+                <div class="card-icon-wrapper add-theme">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+                <h3>Add PCB</h3>
+                <p>Upload new hardware data</p>
+            </a>
+
+            <!-- Card 3: Firmware -->
+            <a href="#" class="glass-card dash-card" onclick="triggerModule('Firmware')">
+                <div class="card-icon-wrapper firmware-theme">
+                    <i class="fa-solid fa-code-commit"></i>
+                </div>
+                <h3>Firmware</h3>
+                <p>Manage ESP8266 flasher</p>
+            </a>
+
+            <!-- Card 4: BIN Manager -->
+            <a href="#" class="glass-card dash-card" onclick="triggerModule('BIN Manager')">
+                <div class="card-icon-wrapper bin-theme">
+                    <i class="fa-solid fa-file-binary"></i>
+                </div>
+                <h3>BIN Manager</h3>
+                <p>Binary file extraction</p>
+            </a>
+
+            <!-- Card 5: AI Assistant -->
+            <a href="#" class="glass-card dash-card" onclick="triggerModule('AI Assistant')">
+                <div class="card-icon-wrapper ai-theme">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <h3>AI Assistant</h3>
+                <p>Diagnostic co-pilot</p>
+            </a>
+
+            <!-- Card 6: Repair Library -->
+            <a href="#" class="glass-card dash-card" onclick="triggerModule('Repair Library')">
+                <div class="card-icon-wrapper repair-theme">
+                    <i class="fa-solid fa-book-journal-whills"></i>
+                </div>
+                <h3>Repair Library</h3>
+                <p>Documentation & Guides</p>
+            </a>
+
+            <!-- Card 7: Profile -->
+            <a href="#" class="glass-card dash-card" onclick="triggerModule('Profile')">
+                <div class="card-icon-wrapper profile-theme">
+                    <i class="fa-solid fa-id-badge"></i>
+                </div>
+                <h3>Profile</h3>
+                <p>User clearance config</p>
+            </a>
+
+            <!-- Card 8: Settings -->
+            <a href="#" class="glass-card dash-card" onclick="triggerModule('Settings')">
+                <div class="card-icon-wrapper settings-theme">
+                    <i class="fa-solid fa-sliders"></i>
+                </div>
+                <h3>Settings</h3>
+                <p>System preferences</p>
+            </a>
+
+        </div>
+    </main>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="bottom-nav glass-panel">
+        <a href="#" class="nav-item active">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="nav-item" onclick="triggerModule('Search PCB')">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <span>Search</span>
+        </a>
+        <a href="#" class="nav-item nav-fab" onclick="triggerModule('Add PCB')">
+            <div class="fab-inner">
+                <i class="fa-solid fa-plus"></i>
+            </div>
+        </a>
+        <a href="#" class="nav-item" onclick="triggerModule('AI Assistant')">
+            <i class="fa-solid fa-robot"></i>
+            <span>AI</span>
+        </a>
+        <a href="#" class="nav-item" onclick="triggerModule('Settings')">
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings</span>
+        </a>
+    </nav>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

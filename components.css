@@ -1,0 +1,334 @@
+/* ==========================================================================
+   PCB HUB - COMPONENT SYSTEM CSS
+   Theme: Dark Industrial Glassmorphism
+   ========================================================================== */
+
+/* Component Variables (Inherits from Phase 1, redefined for safety) */
+:root {
+    --bg-dark: #0a0a0a;
+    --accent-amber: #f59e0b;
+    --accent-amber-hover: #d97706;
+    --accent-cyan: #0ea5e9;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --danger: #ef4444;
+    --success: #10b981;
+    --warning: #eab308;
+    
+    --glass-bg: rgba(30, 30, 30, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --blur-amount: blur(12px);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   1. HEADER COMPONENT
+   ========================================================================== */
+.comp-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background: var(--glass-bg);
+    backdrop-filter: var(--blur-amount);
+    -webkit-backdrop-filter: var(--blur-amount);
+    border-bottom: 1px solid var(--glass-border);
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+.comp-header-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.comp-header-brand i, .comp-header-brand span {
+    color: var(--accent-amber);
+}
+
+.comp-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.comp-icon-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.comp-icon-btn:hover {
+    color: var(--accent-amber);
+}
+
+.comp-user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--accent-amber);
+    object-fit: cover;
+    cursor: pointer;
+}
+
+/* ==========================================================================
+   2. BOTTOM NAVIGATION COMPONENT
+   ========================================================================== */
+.comp-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0.5rem 0;
+    background: var(--glass-bg);
+    backdrop-filter: var(--blur-amount);
+    -webkit-backdrop-filter: var(--blur-amount);
+    border-top: 1px solid var(--glass-border);
+    border-radius: 20px 20px 0 0;
+    z-index: 1000;
+}
+
+.comp-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    padding: 0.5rem;
+    text-decoration: none;
+    transition: var(--transition-smooth);
+    cursor: pointer;
+}
+
+.comp-nav-item i {
+    font-size: 1.25rem;
+}
+
+.comp-nav-item.active, .comp-nav-item:hover {
+    color: var(--accent-amber);
+}
+
+.comp-nav-fab .fab-inner {
+    background: var(--accent-amber);
+    color: var(--bg-dark);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    margin-top: -25px;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+    border: 4px solid var(--bg-dark);
+    transition: var(--transition-smooth);
+}
+
+.comp-nav-fab:hover .fab-inner {
+    transform: scale(1.1);
+}
+
+/* ==========================================================================
+   3. TOAST NOTIFICATION SYSTEM
+   ========================================================================== */
+.comp-toast-container {
+    position: fixed;
+    top: 80px; /* Below header */
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.comp-toast {
+    background: var(--glass-bg);
+    backdrop-filter: var(--blur-amount);
+    -webkit-backdrop-filter: var(--blur-amount);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--glass-shadow);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 280px;
+    transform: translateX(120%);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    pointer-events: auto;
+}
+
+.comp-toast.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.comp-toast-icon { font-size: 1.25rem; }
+.comp-toast.success .comp-toast-icon { color: var(--success); }
+.comp-toast.error .comp-toast-icon { color: var(--danger); }
+.comp-toast.warning .comp-toast-icon { color: var(--warning); }
+.comp-toast.info .comp-toast-icon { color: var(--accent-cyan); }
+
+/* ==========================================================================
+   4. FULL SCREEN LOADER
+   ========================================================================== */
+.comp-loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.comp-loader-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.comp-spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(245, 158, 11, 0.2);
+    border-top-color: var(--accent-amber);
+    border-radius: 50%;
+    animation: comp-spin 1s linear infinite;
+}
+
+@keyframes comp-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   5. MODAL POPUP
+   ========================================================================== */
+.comp-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.comp-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.comp-modal-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 400px;
+    padding: 2rem;
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    text-align: center;
+}
+
+.comp-modal-overlay.active .comp-modal-card {
+    transform: scale(1) translateY(0);
+}
+
+.comp-modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.comp-modal-message {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+}
+
+.comp-modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.comp-modal-btn {
+    flex: 1;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.comp-modal-cancel {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+.comp-modal-cancel:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.comp-modal-confirm {
+    background: var(--accent-amber);
+    color: var(--bg-dark);
+}
+
+.comp-modal-confirm:hover {
+    background: var(--accent-amber-hover);
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+    .comp-bottom-nav {
+        max-width: 600px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 20px 20px 0 0;
+        border-left: 1px solid var(--glass-border);
+        border-right: 1px solid var(--glass-border);
+    }
+}
