@@ -1,69 +1,44 @@
 /**
  * PCB HUB - Search Logic
- * Vanilla JavaScript implementation for Live Search with mock database.
+ * Vanilla JavaScript implementation for Live Search, backed by Firestore.
  */
 
 // ==========================================================================
-// MOCK DATABASE
+// PCB DATABASE (loaded from the Firestore "pcbs" collection)
 // ==========================================================================
-const mockPCBDatabase = [
-    {
-        id: "PCB-TPL-443",
-        brand: "TP-Link",
-        model: "Archer C7 v5",
-        category: "Router",
-        mcu: "Qualcomm QCA9563",
-        eeprom: "W25Q128FV",
-        binAvailable: true,
-        image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=400&q=80"
-    },
-    {
-        id: "PCB-SAM-TV01",
-        brand: "Samsung",
-        model: "UN55RU7100",
-        category: "TV",
-        mcu: "MSTAR X14",
-        eeprom: "24C256",
-        binAvailable: true,
-        image: "https://images.unsplash.com/photo-1555664424-778a1e5e1b48?auto=format&fit=crop&w=400&q=80"
-    },
-    {
-        id: "PCB-BOSCH-ME7",
-        brand: "Bosch",
-        model: "Motronic ME7.5",
-        category: "ECU",
-        mcu: "Infineon C167",
-        eeprom: "95040",
-        binAvailable: false,
-        image: null // Will fall back to placeholder icon
-    },
-    {
-        id: "PCB-ASUS-X550",
-        brand: "Asus",
-        model: "X550VX Mainboard",
-        category: "Laptop",
-        mcu: "Intel SR2HQ",
-        eeprom: "W25Q64FV",
-        binAvailable: true,
-        image: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=400&q=80"
-    },
-    {
-        id: "PCB-APPLE-820",
-        brand: "Apple",
-        model: "820-00165-A",
-        category: "Laptop",
-        mcu: "Intel Core i5",
-        eeprom: "Mac EFI SPI",
-        binAvailable: true,
-        image: null
-    }
-];
+let pcbDatabase = [];
+let dbLoaded = false;
+
+function loadPcbDatabase() {
+    return db.collection('pcbs').get().then((snapshot) => {
+        pcbDatabase = snapshot.docs.map((doc) => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                brand: data.brand || '',
+                model: data.model || '',
+                category: data.category || '',
+                mcu: data.mcu || '',
+                eeprom: data.eeprom || '',
+                binAvailable: !!data.binAvailable,
+                image: data.image || null
+            };
+        });
+        dbLoaded = true;
+    }).catch((error) => {
+        console.error('Failed to load PCB database:', error);
+        dbLoaded = true; // stop waiting; errorState will show on next search
+    });
+}
 
 // ==========================================================================
 // STATE MANAGEMENT & DOM ELEMENTS
 // ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    
+
+    // Kick off the Firestore fetch immediately
+    loadPcbDatabase();
+
     // DOM Elements
     const searchInput = document.getElementById('searchInput');
     const clearSearchBtn = document.getElementById('clearSearchBtn');
@@ -85,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Local State
     let currentCategory = 'All';
     let currentQuery = '';
-    let recentSearches = JSON.parse(localStorage.getItem('pcb_recent_searches')) || ['Archer C7', 'Bosch ME7.5'];
+    let recentSearches = JSON.parse(localStorage.getItem('pcb_recent_searches')) || ['LG AC', 'Whirlpool'];
 
     // Initialize View
     renderRecentSearches();
@@ -156,36 +131,48 @@ document.addEventListener('DOMContentLoaded', () => {
         // Show Loader
         showState(loadingState);
 
-        // Simulate Network Delay
-        setTimeout(() => {
-            try {
-                // Filter Logic
-                const results = mockPCBDatabase.filter(pcb => {
-                    // Match Category
-                    const matchCategory = currentCategory === 'All' || pcb.category === currentCategory;
-                    
-                    // Match Text (ID, Brand, or Model)
-                    const queryLower = currentQuery.toLowerCase();
-                    const matchText = pcb.id.toLowerCase().includes(queryLower) ||
-                                      pcb.brand.toLowerCase().includes(queryLower) ||
-                                      pcb.model.toLowerCase().includes(queryLower);
-                                      
-                    return matchCategory && matchText;
-                });
-
-                // Update UI based on results
-                if (results.length > 0) {
-                    renderResults(results);
-                    showState(resultsState);
-                    saveRecentSearch(currentQuery);
-                } else {
-                    showState(emptyState);
+        // Wait for the Firestore fetch to finish (usually instant after
+        // the first search, since the data is cached in pcbDatabase)
+        const waitForDb = dbLoaded ? Promise.resolve() : new Promise((resolve) => {
+            const check = setInterval(() => {
+                if (dbLoaded) {
+                    clearInterval(check);
+                    resolve();
                 }
-            } catch (error) {
-                console.error("Search failed:", error);
-                showState(errorState);
-            }
-        }, 600); // Artificial delay to show smooth loading
+            }, 100);
+        });
+
+        waitForDb.then(() => {
+            setTimeout(() => {
+                try {
+                    // Filter Logic
+                    const results = pcbDatabase.filter(pcb => {
+                        // Match Category
+                        const matchCategory = currentCategory === 'All' || pcb.category === currentCategory;
+
+                        // Match Text (ID, Brand, or Model)
+                        const queryLower = currentQuery.toLowerCase();
+                        const matchText = pcb.id.toLowerCase().includes(queryLower) ||
+                                          pcb.brand.toLowerCase().includes(queryLower) ||
+                                          pcb.model.toLowerCase().includes(queryLower);
+
+                        return matchCategory && matchText;
+                    });
+
+                    // Update UI based on results
+                    if (results.length > 0) {
+                        renderResults(results);
+                        showState(resultsState);
+                        saveRecentSearch(currentQuery);
+                    } else {
+                        showState(emptyState);
+                    }
+                } catch (error) {
+                    console.error("Search failed:", error);
+                    showState(errorState);
+                }
+            }, 300); // Small delay to keep the loading state feeling smooth
+        });
     }
 
     // ==========================================================================

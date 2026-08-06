@@ -49,11 +49,10 @@
         <div class="filter-scroll-container">
             <div class="filter-pills" id="categoryFilters">
                 <button class="pill active" data-filter="All">All</button>
-                <button class="pill" data-filter="Router">Routers</button>
-                <button class="pill" data-filter="TV">Smart TV</button>
-                <button class="pill" data-filter="ECU">Automotive ECU</button>
-                <button class="pill" data-filter="Laptop">Laptops</button>
-                <button class="pill" data-filter="Mobile">Mobiles</button>
+                <button class="pill" data-filter="AC">AC</button>
+                <button class="pill" data-filter="Washing Machine">Washing Machine</button>
+                <button class="pill" data-filter="Refrigerator">Refrigerator</button>
+                <button class="pill" data-filter="Microwave">Microwave</button>
             </div>
         </div>
     </div>
@@ -75,17 +74,17 @@
                 <h3>Suggested Categories</h3>
             </div>
             <div class="suggestions-grid">
-                <div class="suggestion-card glass-card" onclick="triggerSearch('TP-Link')">
-                    <i class="fa-solid fa-wifi text-cyan"></i>
-                    <span>TP-Link Routers</span>
+                <div class="suggestion-card glass-card" onclick="triggerSearch('LG')">
+                    <i class="fa-solid fa-snowflake text-cyan"></i>
+                    <span>LG AC Boards</span>
                 </div>
-                <div class="suggestion-card glass-card" onclick="triggerSearch('Bosch')">
-                    <i class="fa-solid fa-car text-amber"></i>
-                    <span>Bosch ECUs</span>
+                <div class="suggestion-card glass-card" onclick="triggerSearch('Whirlpool')">
+                    <i class="fa-solid fa-jug-detergent text-amber"></i>
+                    <span>Whirlpool Washing Machine</span>
                 </div>
                 <div class="suggestion-card glass-card" onclick="triggerSearch('Samsung')">
-                    <i class="fa-solid fa-tv text-success"></i>
-                    <span>Samsung Boards</span>
+                    <i class="fa-solid fa-kitchen-set text-success"></i>
+                    <span>Samsung Refrigerator</span>
                 </div>
             </div>
         </section>
@@ -130,6 +129,13 @@
 
     </main>
 
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <script src="script.js"></script>
     <script src="search.js"></script>
 </body>
 </html>
