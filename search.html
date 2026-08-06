@@ -4,23 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PCB HUB - Search Database</title>
-    
+
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Search Page Stylesheet -->
+
+    <!-- Search Page Stylesheet (self-contained module CSS) -->
     <link rel="stylesheet" href="search.css">
 </head>
 <body class="search-body">
-    
+
     <!-- Top App Bar -->
     <header class="app-header glass-panel">
-        <a href="dashboard.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+        <a href="dashboard.html" class="back-btn" aria-label="Back to Dashboard"><i class="fa-solid fa-arrow-left"></i></a>
         <div class="header-brand">
             <i class="fa-solid fa-microchip"></i>
             <h1>PCB <span>HUB</span></h1>
@@ -30,7 +30,9 @@
     <!-- Sticky Search Header -->
     <div class="search-sticky-container glass-panel">
         <div class="search-input-wrapper">
-            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <button id="searchBtn" class="action-btn search-icon-btn" aria-label="Search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
             <input type="text" id="searchInput" placeholder="Search PCB Number, Brand, or Model..." autocomplete="off">
             <button id="clearSearchBtn" class="action-btn hidden" aria-label="Clear Search">
                 <i class="fa-solid fa-xmark"></i>
@@ -42,10 +44,14 @@
                 <button id="qrScannerBtn" class="action-btn qr-btn" aria-label="Scan QR Code">
                     <i class="fa-solid fa-qrcode"></i>
                 </button>
+                <button id="filterBtn" class="action-btn filter-btn" aria-label="Advanced Filters">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span id="filterBadge" class="filter-badge hidden">0</span>
+                </button>
             </div>
         </div>
 
-        <!-- Filter Pills -->
+        <!-- Device Type Filter Pills -->
         <div class="filter-scroll-container">
             <div class="filter-pills" id="categoryFilters">
                 <button class="pill active" data-filter="All">All</button>
@@ -59,7 +65,7 @@
 
     <!-- Main Content Area -->
     <main class="search-workspace">
-        
+
         <!-- Default State: Recent Searches & Suggestions -->
         <section id="defaultState" class="state-container active">
             <div class="section-header">
@@ -107,14 +113,14 @@
             </div>
         </section>
 
-        <!-- Empty Results State -->
+        <!-- Empty Results State (search/filters returned nothing) -->
         <section id="emptyState" class="state-container hidden text-center">
             <div class="empty-illustration">
                 <i class="fa-solid fa-box-open"></i>
             </div>
             <h3>No PCBs Found</h3>
-            <p>We couldn't find any hardware matching your query. Check for typos or try a different model.</p>
-            <button class="btn btn-primary mt-4" onclick="document.getElementById('searchInput').focus()">Try Another Search</button>
+            <p>We couldn't find any hardware matching your query. Check for typos or try a different filter.</p>
+            <button class="btn btn-primary mt-4" onclick="clearAllFilters()">Clear Filters</button>
         </section>
 
         <!-- Error State -->
@@ -124,10 +130,79 @@
             </div>
             <h3>Connection Error</h3>
             <p>Failed to query the PCB database. Please check your network connection.</p>
-            <button class="btn btn-outline mt-4" onclick="performSearch()">Retry</button>
+            <button class="btn btn-outline mt-4" onclick="retrySearch()">Retry</button>
+        </section>
+
+        <!-- Empty Database State (no PCB records exist yet at all) -->
+        <section id="noDatabaseState" class="state-container hidden text-center">
+            <div class="empty-illustration text-amber">
+                <i class="fa-solid fa-database"></i>
+            </div>
+            <h3>Database is Empty</h3>
+            <p>No PCB records have been added yet. Add your first record from the Firebase Console to start searching.</p>
         </section>
 
     </main>
+
+    <!-- Advanced Filter Panel (Bottom Sheet) -->
+    <div id="filterOverlay" class="filter-overlay hidden"></div>
+    <div id="filterPanel" class="filter-panel glass-panel hidden">
+        <div class="filter-panel-header">
+            <h3><i class="fa-solid fa-sliders"></i> Advanced Filters</h3>
+            <button id="filterCloseBtn" class="action-btn" aria-label="Close Filters">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="filter-panel-body">
+            <div class="filter-field">
+                <label for="filterPcbNumber">PCB Number</label>
+                <input type="text" id="filterPcbNumber" placeholder="e.g. PCB-LG-AC01">
+            </div>
+            <div class="filter-field">
+                <label for="filterBrand">Brand</label>
+                <input type="text" id="filterBrand" placeholder="e.g. LG, Samsung, Voltas">
+            </div>
+            <div class="filter-field">
+                <label for="filterModel">Model</label>
+                <input type="text" id="filterModel" placeholder="e.g. GL-D201ABCY">
+            </div>
+            <div class="filter-field">
+                <label for="filterDeviceType">Device Type</label>
+                <select id="filterDeviceType">
+                    <option value="">Any</option>
+                    <option value="AC">AC</option>
+                    <option value="Washing Machine">Washing Machine</option>
+                    <option value="Refrigerator">Refrigerator</option>
+                    <option value="Microwave">Microwave</option>
+                </select>
+            </div>
+            <div class="filter-field">
+                <label for="filterMcu">MCU</label>
+                <input type="text" id="filterMcu" placeholder="e.g. STM8, PIC16F">
+            </div>
+            <div class="filter-field">
+                <label for="filterEeprom">EEPROM</label>
+                <input type="text" id="filterEeprom" placeholder="e.g. 24C02, 93C66">
+            </div>
+            <div class="filter-field">
+                <label for="filterBin">BIN Available</label>
+                <select id="filterBin">
+                    <option value="">Any</option>
+                    <option value="yes">Available</option>
+                    <option value="no">Not Available</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="filter-panel-actions">
+            <button id="filterResetBtn" class="btn btn-outline">Reset</button>
+            <button id="filterApplyBtn" class="btn btn-primary">Apply Filters</button>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container (self-contained for this module) -->
+    <div id="toast-container" class="toast-container"></div>
 
     <!-- Firebase SDK (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
